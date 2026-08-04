@@ -167,9 +167,9 @@ class MetadataService:
         except Exception as e:
             print(f"[MetadataService] Error searching iTunes albums: {e}")
 
-        # 2. Query MusicBrainz API to get more results
+        # 2. Query MusicBrainz API to get more results (Limit to 5 to avoid long delays)
         try:
-            mb_url = f"https://musicbrainz.org/ws/2/release/?query={urllib.parse.quote(query)}&fmt=json&limit=15"
+            mb_url = f"https://musicbrainz.org/ws/2/release/?query={urllib.parse.quote(query)}&fmt=json&limit=5"
             resp = self.session.get(mb_url, timeout=4)
             if resp.status_code == 200:
                 data = resp.json()
@@ -179,17 +179,33 @@ class MetadataService:
                     artist_credits = rel.get("artist-credit", [])
                     artist = artist_credits[0].get("name", "") if artist_credits else ""
                     date = rel.get("date", "")[:4]
-                    
                     track_count = rel.get("track-count", 0)
+                    
+                    # Fetch tracks explicitly for this release
+                    mb_tracks = []
+                    if rel_id:
+                        lookup_url = f"https://musicbrainz.org/ws/2/release/{rel_id}?inc=recordings&fmt=json"
+                        try:
+                            l_resp = self.session.get(lookup_url, timeout=3)
+                            if l_resp.status_code == 200:
+                                l_data = l_resp.json()
+                                for media in l_data.get("media", []):
+                                    for tr in media.get("tracks", []):
+                                        t_num = tr.get("position", len(mb_tracks) + 1)
+                                        rec = tr.get("recording", {})
+                                        t_title = tr.get("title") or rec.get("title") or f"Pista {t_num}"
+                                        mb_tracks.append({"number": t_num, "title": t_title, "artist": artist})
+                        except Exception:
+                            pass
                     
                     results.append({
                         "album": title,
                         "artist": artist,
                         "year": date,
                         "genre": "Varios",
-                        "cover_url": f"https://coverartarchive.org/release/{rel_id}/front-250",
+                        "cover_url": f"https://coverartarchive.org/release/{rel_id}/front-500",
                         "track_count": track_count,
-                        "tracks": [],
+                        "tracks": mb_tracks,
                         "source": "MusicBrainz"
                     })
         except Exception as e:

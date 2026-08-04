@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       await apiPost('/api/eject_cd', { drive: drive });
       statusText.textContent = "Bandeja expulsada.";
-      metaSourceTag.textContent = "No se detectó el disco automáticamente";
+      metaSourceTag.textContent = "No se detectaron los metadatos automáticamente";
       inputAlbum.value = "";
       inputArtist.value = "";
       inputYear.value = "";
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       statusText.textContent = `Disco detectado (${res.tracks.length} pistas en ${driveLetter}).`;
-      metaSourceTag.textContent = res.found_online ? `MusicBrainz: ${res.disc_id.substring(0, 8)}...` : "No se detectó el disco automáticamente";
+      metaSourceTag.textContent = res.found_online ? `MusicBrainz: ${res.disc_id.substring(0, 8)}...` : "No se detectaron los metadatos automáticamente";
       
       inputAlbum.value = res.found_online ? (res.album || '') : '';
       inputArtist.value = res.found_online ? (res.artist || '') : '';
