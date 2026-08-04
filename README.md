@@ -32,6 +32,8 @@ Puedes descargar el programa oficial listo para usar desde la sección de **[Rel
 - Windows 10 o Windows 11 (64-bits).
 - Unidad Lectora de CD/DVD física o externa (USB).
 
+> ⚠️ **Nota sobre la instalación (Windows SmartScreen):** Como este es un proyecto de software independiente, es posible que Windows te muestre una pantalla de advertencia azul indicando "Editor desconocido" al intentar instalarlo. Esto es normal y el instalador es completamente seguro. Para continuar, simplemente haz clic en **"Más información"** y luego presiona **"Ejecutar de todas formas"**.
+
 ---
 
 ## 🛠️ Tecnologías Utilizadas
