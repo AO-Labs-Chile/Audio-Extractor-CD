@@ -473,6 +473,20 @@ class ServerThread(threading.Thread):
         self.server.shutdown()
 
 def main():
+    import ctypes
+    
+    mutex_name = "AudioExtractorCD_AOLabs_Mutex"
+    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
+    last_error = ctypes.windll.kernel32.GetLastError()
+    
+    if last_error == 183: # ERROR_ALREADY_EXISTS
+        print("La aplicación ya está abierta.")
+        hwnd = ctypes.windll.user32.FindWindowW(None, "Audio Extractor CD by AO Labs")
+        if hwnd:
+            ctypes.windll.user32.ShowWindow(hwnd, 9) # SW_RESTORE
+            ctypes.windll.user32.SetForegroundWindow(hwnd)
+        sys.exit(0)
+
     port = 8745
     url = f"http://127.0.0.1:{port}"
 
