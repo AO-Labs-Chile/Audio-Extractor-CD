@@ -345,6 +345,15 @@ def rip_worker(drive_letter, output_dir, format_type, quality_setting, album_met
         dest_folder = os.path.join(output_dir, f"{clean_artist} - {clean_album}")
         os.makedirs(dest_folder, exist_ok=True)
 
+        if current_cover_bytes:
+            cover_path = os.path.join(dest_folder, "Folder.jpg")
+            if not os.path.exists(cover_path):
+                try:
+                    with open(cover_path, "wb") as f:
+                        f.write(current_cover_bytes)
+                except Exception as e:
+                    print(f"Error saving Folder.jpg: {e}")
+
         for index, tr in enumerate(selected_tracks):
             if not is_ripping:
                 break
