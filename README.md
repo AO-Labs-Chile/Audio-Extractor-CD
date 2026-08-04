@@ -1,0 +1,48 @@
+# Audio Extractor CD 💽
+
+![Release Version](https://img.shields.io/badge/Versión-1.0.0-blue)
+![OS](https://img.shields.io/badge/OS-Windows_10%2B-lightgrey)
+![Made in Chile](https://img.shields.io/badge/Desarrollado_en-Chile-red)
+
+**Audio Extractor CD** es una herramienta moderna, rápida y profesional para digitalizar tu colección de CDs de audio físicos. Extrae pistas directamente desde la lectora óptica de tu computador (sector por sector) y conviértelas en formatos de altísima calidad sin pérdida, o en formatos comprimidos de máxima compatibilidad.
+
+Desarrollado por **AO Labs Chile** ([www.aolabs.cl](https://www.aolabs.cl)).
+
+---
+
+## ✨ Características Principales
+
+- **⚙️ Motor de Extracción Precisa:** Lectura directa del hardware (vía `win32`) que procesa tu disco sector por sector para asegurar que no haya saltos ni errores de audio.
+- **🎵 Múltiples Formatos:** Exporta tu música en **FLAC** (calidad original sin pérdida), **MP3** (hasta 320 kbps), **WAV**, **AAC**, **OGG** y **OPUS**.
+- **🌐 Metadatos Automáticos:** Integración oficial con la base de datos de **MusicBrainz**. Al insertar un disco comercial, el programa detectará automáticamente el álbum, los nombres de las pistas y los artistas.
+- **🖼️ Auto-Descarga de Portadas:** Obtiene carátulas en alta resolución directamente desde el Cover Art Archive. Si un disco es muy extraño y no está en la base de datos, incluye un buscador integrado a Google Imágenes.
+- **💻 Integración con Windows:** Configurado con "AutoPlay Handlers" para que Windows 10/11 te sugiera extraer tu música automáticamente con la aplicación apenas insertes un disco.
+- **🎨 Interfaz Premium:** Un diseño oscuro (Dark Mode), responsivo, de carga rápida y moderno, utilizando `pywebview` para renderizar un motor web nativo de escritorio ligero y libre de dependencias pesadas.
+
+---
+
+## 🚀 Descarga e Instalación
+
+Puedes descargar el programa oficial listo para usar desde la sección de **[Releases](https://github.com/)** a la derecha de esta pantalla. Ofrecemos dos versiones para Windows:
+
+1. **Versión Instalador (`.exe`):** Instala el programa en tu sistema, crea accesos directos en tu escritorio y lo integra nativamente con Windows.
+2. **Versión Portable (`.zip`):** Una versión autónoma que no requiere instalación. Descomprime y ejecuta `Audio_Extractor_CD_AO_Labs.exe` desde cualquier pendrive o carpeta.
+
+### Requisitos Mínimos
+- Windows 10 o Windows 11 (64-bits).
+- Unidad Lectora de CD/DVD física o externa (USB).
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Python 3.10**: Motor principal de backend y lectura de hardware.
+- **PyWebView**: Contenedor ligero de frontend (HTML/CSS/JS nativo).
+- **FFmpeg**: Sistema de codificación universal de formatos de audio e inyección de metadatos (etiquetas ID3/Vorbis).
+- **PyInstaller & Inno Setup**: Empaquetado y distribución.
+
+---
+
+## 📜 Licencia
+
+Copyright © 2026 AO Labs Chile. Todos los derechos reservados.
