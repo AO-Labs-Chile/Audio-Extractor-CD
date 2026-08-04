@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Extractor CD by AO Labs</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- No external font requests — prevents PyWebView startup freeze -->
+  <style>
+    :root {
+      --font-main: 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand-badge">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2a10 10 0 0 1 10 10"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Audio Extractor CD</h1>
+          <span class="brand-sub">by AO Labs</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-kofi" class="btn-kofi" title="Apoyar el desarrollo en Ko-fi">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span>❤️ Apoyar / Donar</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- CD Drive Selection Bar -->
+      <section class="drive-bar-card glass-panel">
+        <div class="drive-selector-group">
+          <label for="drive-select">Unidad de CD / DVD:</label>
+          <div class="custom-select-wrapper">
+            <select id="drive-select">
+              <option value="">-- Seleccionar Lector de CD --</option>
+            </select>
+          </div>
+          <button id="btn-refresh-drives" class="btn-secondary" title="Actualizar Lectores">
+            🔄 Refresh
+          </button>
+        </div>
+
+        <div class="drive-status" id="drive-status">
+          <span class="status-dot"></span>
+          <span id="status-text">Listo. Selecciona una unidad con disco.</span>
+        </div>
+      </section>
+
+      <!-- Album Metadata & Cover Section -->
+      <section class="album-details-grid">
+        <!-- Cover Art Frame -->
+        <div class="cover-art-container glass-panel">
+          <div class="cover-frame" id="cover-frame">
+            <img id="cover-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 24 24' fill='none' stroke='%233a4161' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='12' cy='12' r='4'/><path d='M12 2v4M12 18v4M2 12h4M18 12h4'/></svg>" alt="Portada de Álbum">
+            
+            <div class="cover-overlay">
+              <button id="btn-search-cover-online" class="btn-cover-action">
+                🔍 Buscar Portada Web
+              </button>
+              <button id="btn-load-cover-local" class="btn-cover-action">
+                📁 Cargar Imagen Local
+              </button>
+            </div>
+          </div>
+          <div class="cover-caption">
+            <span>Haz clic para cambiar portada</span>
+          </div>
+        </div>
+
+        <!-- Editable Metadata Form -->
+        <div class="metadata-form glass-panel">
+          <div class="panel-header">
+            <h3>Metadatos del Álbum</h3>
+            <div class="header-tools">
+              <button id="btn-open-album-search" class="btn-secondary-sm" title="Buscar álbum y títulos de pistas en internet">
+                🌐 Buscar Álbum en Internet
+              </button>
+              <span class="badge-tag" id="meta-source-tag">No se detectó el disco automáticamente</span>
+            </div>
+          </div>
+
+          <datalist id="genre-list">
+            <option value="Rock">
+            <option value="Pop">
+            <option value="Salsa">
+            <option value="Metal">
+            <option value="Clásica">
+            <option value="Electrónica">
+            <option value="Jazz">
+            <option value="Hip-Hop">
+            <option value="Reggaeton">
+            <option value="Cumbia">
+            <option value="Folclore">
+            <option value="Soundtrack">
+          </datalist>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="input-album">Título del Álbum:</label>
+              <input type="text" id="input-album" placeholder="Nombre del Álbum" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
+              <label for="input-artist">Artista principal:</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="input-artist" placeholder="Nombre del Artista" style="flex: 1;">
+                <button id="btn-apply-artist-all" class="btn-secondary-sm" title="Aplicar este artista a todas las pistas">Aplicar</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-year">Año de Lanzamiento:</label>
+              <input type="text" id="input-year" placeholder="Ej: 2024" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
+              <label for="input-genre">Género Musical:</label>
+              <input type="text" id="input-genre" list="genre-list" placeholder="Ej: Rock / Pop" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Extraction Settings & Format Bar -->
+      <section class="format-settings-card glass-panel">
+        <div class="settings-group">
+          <label>Formato de Salida:</label>
+          <div class="format-pills" id="format-pills">
+            <button class="pill active" data-format="flac" title="FLAC (Calidad Máxima Sin Pérdida)">FLAC</button>
+            <button class="pill" data-format="mp3" title="MP3 (Máxima Compatibilidad)">MP3</button>
+            <button class="pill" data-format="wav" title="WAV (Audio PCM Sin Comprimir)">WAV</button>
+            <button class="pill" data-format="aac" title="AAC / M4A (MPEG-4 Audio)">AAC / M4A</button>
+            <button class="pill" data-format="ogg" title="OGG Vorbis Audio">OGG</button>
+            <button class="pill" data-format="opus" title="OPUS Low Bitrate">OPUS</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label for="quality-select">Calidad:</label>
+          <select id="quality-select">
+            <option value="max">Compresión FLAC Máxima (Nivel 8)</option>
+            <option value="320">MP3 320 kbps (Máxima Calidad CBR)</option>
+            <option value="256">256 kbps (Estándar)</option>
+            <option value="v0">VBR V0 (~240 kbps)</option>
+          </select>
+        </div>
+
+        <div class="settings-group folder-group">
+          <label for="output-path-input">Carpeta Destino:</label>
+          <div class="input-with-button">
+            <input type="text" id="output-path-input" readonly placeholder="Seleccionar carpeta...">
+            <button id="btn-browse-folder" class="btn-secondary">📁 Buscar...</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Track List Table -->
+      <section class="track-list-card glass-panel">
+        <div class="table-header-bar">
+          <div class="table-title">
+            <h3>Pistas del CD</h3>
+            <span class="track-count-badge" id="track-count-label">0 Pistas</span>
+          </div>
+          <div class="table-actions">
+            <button id="btn-select-all" class="btn-text">✓ Seleccionar Todas</button>
+            <button id="btn-deselect-all" class="btn-text">✗ Desmarcar Todas</button>
+          </div>
+        </div>
+
+        <div class="table-scroll-container">
+          <table class="tracks-table">
+            <thead>
+              <tr>
+                <th width="40"><input type="checkbox" id="check-header-all" checked></th>
+                <th width="50">#</th>
+                <th width="90">Reproducir</th>
+                <th>Título de la Pista (Editable)</th>
+                <th>Artista</th>
+                <th width="90">Duración</th>
+              </tr>
+            </thead>
+            <tbody id="tracks-tbody">
+              <tr>
+                <td colspan="6" class="empty-msg">Inserta o selecciona un CD de audio para leer las pistas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Execution Bar -->
+    <footer class="app-footer glass-panel">
+      <div class="footer-info">
+        <span class="app-version">Audio Extractor CD v1.0 • Desarrollado por AO Labs Chile • <a href="https://www.aolabs.cl" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">www.aolabs.cl</a></span>
+      </div>
+
+      <div class="footer-actions">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-main); cursor: pointer;">
+          <input type="checkbox" id="check-auto-open" checked>
+          Abrir carpeta al terminar
+        </label>
+        <button id="btn-start-rip" class="btn-primary-glow">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>INICIAR EXTRACCIÓN A FLAC</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Progress Overlay Modal -->
+  <div id="progress-modal" class="modal-backdrop hidden">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div class="spinner-ring"></div>
+        <h3 id="progress-title">Extrayendo CD de Audio...</h3>
+      </div>
+      
+      <div class="progress-body">
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progress-status-text">Iniciando lectura de pistas...</span>
+          <span id="progress-percentage-text">0%</span>
+        </div>
+      </div>
+
+      <div class="modal-actions" id="modal-actions-container">
+        <button id="btn-cancel-rip" class="btn-danger">Cancelar Proceso</button>
+        <button id="btn-accept-rip" class="btn-primary hidden">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Cover Search Modal -->
+  <div id="cover-search-modal" class="modal-backdrop hidden">
+    <div class="modal-card search-modal-card glass-panel">
+      <div class="modal-header">
+        <h3>🔍 Buscador de Portadas en Internet</h3>
+        <button id="btn-close-cover-modal" class="btn-icon-close">✕</button>
+      </div>
+
+      <div class="search-bar-group">
+        <input type="text" id="cover-search-input" placeholder="Buscar por Artista y Álbum...">
+        <button id="btn-execute-cover-search" class="btn-primary">Buscar</button>
+      </div>
+
+      <div class="cover-results-grid" id="cover-results-grid">
+        <div class="search-placeholder-msg">Ingresa el nombre del artista o álbum para buscar carátulas en HD.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Full Album & Tracks Search Modal -->
+  <div id="album-search-modal" class="modal-backdrop hidden">
+    <div class="modal-card search-modal-card glass-panel" style="width: 750px;">
+      <div class="modal-header">
+        <h3>🌐 Buscador de Álbumes y Pistas en Internet</h3>
+        <button id="btn-close-album-modal" class="btn-icon-close">✕</button>
+      </div>
+
+      <div class="search-bar-group">
+        <input type="text" id="album-search-input" placeholder="Nombre del artista, banda o álbum...">
+        <button id="btn-execute-album-search" class="btn-primary">Buscar Álbum</button>
+      </div>
+
+      <div class="album-results-list" id="album-results-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+        <div class="search-placeholder-msg">Busca un álbum para importar automáticamente los metadatos y los nombres de las pistas.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

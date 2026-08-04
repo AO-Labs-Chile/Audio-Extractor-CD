@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# PyInstaller folders
+build/
+dist/
+
+# Env
+venv/
+.env
+
+# MacOS/Windows hidden files
+.DS_Store
+Thumbs.db
+Desktop.ini
