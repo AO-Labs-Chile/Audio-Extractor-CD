@@ -159,6 +159,35 @@ def api_get_default_music_dir():
     except Exception:
         return jsonify({"success": True, "path": "C:\\Users\\Public\\Music"})
 
+@app.route("/api/album_search", methods=["POST"])
+def api_album_search():
+    data = request.get_json(silent=True) or {}
+    query = data.get("query", "")
+    if not query:
+        return jsonify({"success": False, "message": "Consulta vacía."})
+    
+    results = metadata_service.search_album_musicbrainz(query)
+    return jsonify({"success": True, "results": results})
+
+@app.route("/api/eject_cd", methods=["POST"])
+def api_eject_cd():
+    data = request.get_json(silent=True) or {}
+    drive = data.get("drive", "")
+    if not drive:
+        return jsonify({"success": False})
+    try:
+        import ctypes
+        dl = drive[0].upper()
+        # open the drive as cdaudio and alias it to avoid conflicts
+        ctypes.windll.winmm.mciSendStringW(f"open {dl}: type cdaudio alias cd_{dl}", None, 0, None)
+        ctypes.windll.winmm.mciSendStringW(f"set cd_{dl} door open", None, 0, None)
+        # close the alias
+        ctypes.windll.winmm.mciSendStringW(f"close cd_{dl}", None, 0, None)
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Error ejecting CD: {e}")
+        return jsonify({"success": False})
+
 @app.route("/api/open_folder", methods=["POST"])
 def api_open_folder():
     data = request.get_json(silent=True) or {}
