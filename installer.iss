@@ -1,6 +1,6 @@
 [Setup]
 AppName=Audio Extractor CD by AO Labs
-AppVersion=1.1.1
+AppVersion=1.1.2
 AppId=AudioExtractorCD_AOLabs
 DefaultDirName={autopf}\Audio Extractor CD
 DefaultGroupName=Audio Extractor CD

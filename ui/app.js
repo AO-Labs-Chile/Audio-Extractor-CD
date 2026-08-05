@@ -682,5 +682,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ── Drive physical removal polling ──────────────────────
+  setInterval(async () => {
+    const drive = driveSelect.value;
+    if (!drive) return;
+    
+    // Solo verificar si tenemos pistas cargadas en pantalla
+    if (currentTracks.length > 0) {
+      try {
+        const res = await apiPost('/api/check_drive', { drive: drive });
+        if (res && !res.ready) {
+          // El disco fue extraído físicamente
+          console.log("[app.js] El disco fue retirado manualmente. Limpiando interfaz...");
+          statusText.textContent = "El disco fue retirado.";
+          metaSourceTag.textContent = "No se detectaron los metadatos automáticamente";
+          inputAlbum.value = "";
+          inputArtist.value = "";
+          inputYear.value = "";
+          inputGenre.value = "";
+          coverImg.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 24 24' fill='none' stroke='%233a4161' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='12' cy='12' r='4'/><path d='M12 2v4M12 18v4M2 12h4M18 12h4'/></svg>";
+          
+          currentTracks = [];
+          renderTracksTable();
+        }
+      } catch (e) {
+        // Ignorar errores de red
+      }
+    }
+  }, 2000);
+
   console.log('[app.js] Initialization complete ✅');
 });
