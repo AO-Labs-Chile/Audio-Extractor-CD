@@ -167,7 +167,76 @@ class MetadataService:
         except Exception as e:
             print(f"[MetadataService] Error searching iTunes albums: {e}")
 
-        # 2. Query MusicBrainz API to get more results (Limit to 5 to avoid long delays)
+        # 2. Query Discogs API
+        try:
+            discogs_key = "fjumhPOhCHyTmaBvbopB"
+            discogs_secret = "RlGRptIgsoZmvfFHCvYMzZZBmKDXwRIo"
+            discogs_headers = {
+                "Authorization": f"Discogs key={discogs_key}, secret={discogs_secret}",
+                "User-Agent": "AudioExtractorCD_AOLabs/1.0"
+            }
+            discogs_url = f"https://api.discogs.com/database/search?q={urllib.parse.quote(query)}&type=release&per_page=5"
+            resp = self.session.get(discogs_url, headers=discogs_headers, timeout=4)
+            if resp.status_code == 200:
+                data = resp.json()
+                for rel in data.get("results", []):
+                    rel_id = rel.get("id")
+                    title_full = rel.get("title", "")
+                    artist = ""
+                    album = title_full
+                    if " - " in title_full:
+                        parts = title_full.split(" - ", 1)
+                        artist = parts[0].strip()
+                        album = parts[1].strip()
+                        
+                    year = rel.get("year", "")
+                    genre = rel.get("genre", [""])[0] if rel.get("genre") else "Varios"
+                    cover_url = rel.get("cover_image", "")
+                    
+                    discogs_tracks = []
+                    if rel_id:
+                        lookup_url = f"https://api.discogs.com/releases/{rel_id}"
+                        try:
+                            l_resp = self.session.get(lookup_url, headers=discogs_headers, timeout=3)
+                            if l_resp.status_code == 200:
+                                l_data = l_resp.json()
+                                for tr in l_data.get("tracklist", []):
+                                    # Skip headings/index tracks
+                                    if tr.get("type_") != "track":
+                                        continue
+                                    t_num = len(discogs_tracks) + 1
+                                    t_title = tr.get("title", f"Pista {t_num}")
+                                    
+                                    duration_sec = 0
+                                    dur_str = tr.get("duration", "")
+                                    if ":" in dur_str:
+                                        d_parts = dur_str.split(":")
+                                        if len(d_parts) == 2 and d_parts[0].isdigit() and d_parts[1].isdigit():
+                                            duration_sec = int(d_parts[0]) * 60 + int(d_parts[1])
+                                            
+                                    discogs_tracks.append({
+                                        "number": t_num, 
+                                        "title": t_title, 
+                                        "artist": artist,
+                                        "duration": duration_sec
+                                    })
+                        except Exception:
+                            pass
+                            
+                    results.append({
+                        "album": album,
+                        "artist": artist,
+                        "year": str(year),
+                        "genre": genre,
+                        "cover_url": cover_url,
+                        "track_count": len(discogs_tracks),
+                        "tracks": discogs_tracks,
+                        "source": "Discogs"
+                    })
+        except Exception as e:
+            print(f"[MetadataService] Error searching Discogs: {e}")
+
+        # 3. Query MusicBrainz API to get more results (Limit to 5 to avoid long delays)
         try:
             mb_url = f"https://musicbrainz.org/ws/2/release/?query={urllib.parse.quote(query)}&fmt=json&limit=5"
             resp = self.session.get(mb_url, timeout=4)
@@ -324,7 +393,12 @@ class MetadataService:
 
         if url_or_path.startswith("http://") or url_or_path.startswith("https://"):
             try:
-                resp = self.session.get(url_or_path, timeout=4)
+                headers = {}
+                if "discogs.com" in url_or_path:
+                    headers = {
+                        "Authorization": "Discogs key=fjumhPOhCHyTmaBvbopB, secret=RlGRptIgsoZmvfFHCvYMzZZBmKDXwRIo"
+                    }
+                resp = self.session.get(url_or_path, headers=headers, timeout=4)
                 if resp.status_code == 200:
                     content_type = resp.headers.get("Content-Type", "image/jpeg")
                     if "png" in content_type:
