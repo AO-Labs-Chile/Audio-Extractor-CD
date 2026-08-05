@@ -1,6 +1,6 @@
 # Audio Extractor CD 💽
 
-![Release Version](https://img.shields.io/badge/Versión-1.1.1-blue)
+![Release Version](https://img.shields.io/badge/Versión-1.1.4-blue)
 ![OS](https://img.shields.io/badge/OS-Windows_10%2B-lightgrey)
 ![Made in Chile](https://img.shields.io/badge/Desarrollado_en-Chile-red)
 
@@ -16,7 +16,7 @@ Desarrollado por **AO Labs Chile** ([www.aolabs.cl](https://www.aolabs.cl)).
 - **🎵 Múltiples Formatos:** Exporta tu música en **FLAC** (calidad original sin pérdida), **MP3** (hasta 320 kbps), **WAV**, **AAC**, **OGG** y **OPUS**.
 - **🌐 Metadatos Automáticos y Manuales:** Poderoso motor de búsqueda conectado a la API de **iTunes Store**, **Discogs** y **MusicBrainz**. Al insertar un disco, el programa detecta automáticamente álbumes y pistas, o te permite buscarlos en la base de datos de Discogs con un clic.
 - **🖼️ Gestión de Portadas Inteligente:** Autodescarga carátulas en altísima resolución. Si no encuentra la correcta, puedes usar el buscador integrado, o cargar tu propia imagen `.jpg`/`.png` desde tu computador; la imagen quedará permanentemente inyectada dentro del archivo FLAC/MP3 y en la carpeta destino como `Folder.jpg`.
-- **💻 Integración con Windows:** Configurado con "AutoPlay Handlers" para que Windows te sugiera extraer música automáticamente al insertar un disco. Además, incorpora bloqueo de múltiple apertura (si el programa ya está abierto, lo traerá al frente).
+- **💻 Integración y Auto-Detección:** Configurado con "AutoPlay Handlers" para abrirse automáticamente con Windows. Además, su radar interno **detecta cuando insertas o retiras físicamente un disco** mientras el programa está abierto, cargando y buscando metadatos automáticamente, o limpiando la pantalla sin necesidad de actualizar manualmente. Incluye bloqueo de múltiple apertura.
 - **🔄 Actualizador Silencioso:** El instalador funciona inteligentemente como un actualizador para futuras versiones. Simplemente instálalo encima y actualizará todo el código sin necesidad de desinstalar nada y sin borrar tus configuraciones.
 - **🎨 Interfaz Premium:** Un diseño oscuro (Dark Mode), responsivo, de carga rápida y moderno, utilizando `pywebview` para renderizar un motor web nativo de escritorio ligero y libre de dependencias pesadas.
 
