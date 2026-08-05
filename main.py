@@ -50,14 +50,6 @@ def api_get_drives():
         print(f"[API] Error getting drives: {e}")
         return jsonify([])
 
-@app.route("/api/cd_info", methods=["POST"])
-def api_read_cd_info():
-    global current_cover_bytes, current_cover_mime
-    data = request.get_json(silent=True) or {}
-    drive_letter = data.get("drive", "")
-    if not drive_letter:
-        return jsonify({"success": False, "message": "Selecciona una unidad de CD"})
-
 @app.route("/api/check_drive", methods=["POST"])
 def api_check_drive():
     data = request.get_json(silent=True) or {}
@@ -66,11 +58,18 @@ def api_check_drive():
         return jsonify({"ready": False})
     
     try:
-        # Intenta listar la raíz. Si no hay disco, arroja error.
         os.listdir(f"{drive_letter}\\")
         return jsonify({"ready": True})
     except Exception:
         return jsonify({"ready": False})
+
+@app.route("/api/cd_info", methods=["POST"])
+def api_read_cd_info():
+    global current_cover_bytes, current_cover_mime
+    data = request.get_json(silent=True) or {}
+    drive_letter = data.get("drive", "")
+    if not drive_letter:
+        return jsonify({"success": False, "message": "Selecciona una unidad de CD"})
 
     try:
         toc = ripper.read_toc(drive_letter)
