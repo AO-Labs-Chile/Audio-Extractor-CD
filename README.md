@@ -1,6 +1,6 @@
 # Audio Extractor CD 💽
 
-![Release Version](https://img.shields.io/badge/Versión-1.0.0-blue)
+![Release Version](https://img.shields.io/badge/Versión-1.1.1-blue)
 ![OS](https://img.shields.io/badge/OS-Windows_10%2B-lightgrey)
 ![Made in Chile](https://img.shields.io/badge/Desarrollado_en-Chile-red)
 
@@ -14,9 +14,10 @@ Desarrollado por **AO Labs Chile** ([www.aolabs.cl](https://www.aolabs.cl)).
 
 - **⚙️ Motor de Extracción Precisa:** Lectura directa del hardware (vía `win32`) que procesa tu disco sector por sector para asegurar que no haya saltos ni errores de audio.
 - **🎵 Múltiples Formatos:** Exporta tu música en **FLAC** (calidad original sin pérdida), **MP3** (hasta 320 kbps), **WAV**, **AAC**, **OGG** y **OPUS**.
-- **🌐 Metadatos Automáticos:** Integración oficial con la base de datos de **MusicBrainz**. Al insertar un disco comercial, el programa detectará automáticamente el álbum, los nombres de las pistas y los artistas.
-- **🖼️ Auto-Descarga de Portadas:** Obtiene carátulas en alta resolución directamente desde el Cover Art Archive. Si un disco es muy extraño y no está en la base de datos, incluye un buscador integrado a Google Imágenes.
-- **💻 Integración con Windows:** Configurado con "AutoPlay Handlers" para que Windows 10/11 te sugiera extraer tu música automáticamente con la aplicación apenas insertes un disco.
+- **🌐 Metadatos Automáticos y Manuales:** Poderoso motor de búsqueda conectado a la API de **iTunes Store**, **Discogs** y **MusicBrainz**. Al insertar un disco, el programa detecta automáticamente álbumes y pistas, o te permite buscarlos en la base de datos de Discogs con un clic.
+- **🖼️ Gestión de Portadas Inteligente:** Autodescarga carátulas en altísima resolución. Si no encuentra la correcta, puedes usar el buscador integrado, o cargar tu propia imagen `.jpg`/`.png` desde tu computador; la imagen quedará permanentemente inyectada dentro del archivo FLAC/MP3 y en la carpeta destino como `Folder.jpg`.
+- **💻 Integración con Windows:** Configurado con "AutoPlay Handlers" para que Windows te sugiera extraer música automáticamente al insertar un disco. Además, incorpora bloqueo de múltiple apertura (si el programa ya está abierto, lo traerá al frente).
+- **🔄 Actualizador Silencioso:** El instalador funciona inteligentemente como un actualizador para futuras versiones. Simplemente instálalo encima y actualizará todo el código sin necesidad de desinstalar nada y sin borrar tus configuraciones.
 - **🎨 Interfaz Premium:** Un diseño oscuro (Dark Mode), responsivo, de carga rápida y moderno, utilizando `pywebview` para renderizar un motor web nativo de escritorio ligero y libre de dependencias pesadas.
 
 ---
