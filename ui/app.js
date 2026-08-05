@@ -185,6 +185,46 @@ document.addEventListener('DOMContentLoaded', () => {
   // Auto-load drives on page load (safe with Flask — no deadlocks)
   loadDrives();
 
+  // ── OTA Auto-Updater ──────────────────────────────────
+  async function checkForUpdates() {
+    try {
+      const res = await apiGet('/api/check_updates');
+      if (res && res.update_available) {
+        const updateModal = document.getElementById('update-modal');
+        const updateTitle = document.getElementById('update-title');
+        const updateDesc = document.getElementById('update-desc');
+        const btnUpdateLater = document.getElementById('btn-update-later');
+        const btnUpdateNow = document.getElementById('btn-update-now');
+
+        updateTitle.textContent = `¡Nueva versión v${res.latest_version} disponible!`;
+        updateDesc.innerHTML = `Hay una actualización lista para instalar.<br><br><div style="font-size: 0.8rem; text-align: left; max-height: 100px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px;">${res.notes.replace(/\\n/g, '<br>')}</div>`;
+        
+        updateModal.classList.remove('hidden');
+
+        btnUpdateLater.onclick = () => {
+          updateModal.classList.add('hidden');
+        };
+
+        btnUpdateNow.onclick = async () => {
+          btnUpdateNow.disabled = true;
+          btnUpdateLater.disabled = true;
+          btnUpdateNow.textContent = "Descargando... (El programa se reiniciará)";
+          try {
+            await apiPost('/api/apply_update', { url: res.download_url });
+            // The backend will kill itself shortly after
+          } catch (e) {
+            console.error("Error triggering update:", e);
+          }
+        };
+      }
+    } catch (e) {
+      console.log("No se pudo comprobar actualizaciones.");
+    }
+  }
+
+  // Check for updates 2 seconds after startup to avoid blocking initial render
+  setTimeout(checkForUpdates, 2000);
+
   btnRefreshDrives.addEventListener('click', loadDrives);
 
   const btnEjectCd = document.getElementById('btn-eject-cd');

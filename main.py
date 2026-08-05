@@ -19,6 +19,8 @@ def get_resource_path(relative_path):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
+APP_VERSION = "1.1.5"
+
 # ── Flask App ──────────────────────────────────────────────
 UI_DIR = get_resource_path("ui")
 app = Flask(__name__, static_folder=UI_DIR, static_url_path="")
@@ -441,6 +443,77 @@ def rip_worker(drive_letter, output_dir, format_type, quality_setting, album_met
         rip_progress["success"] = False
         rip_progress["detail"] = str(e)
 
+
+# ── Updates: OTA Auto-Updater ──────────────────────────────
+import requests
+import subprocess
+
+@app.route("/api/check_updates", methods=["GET"])
+def api_check_updates():
+    try:
+        resp = requests.get("https://api.github.com/repos/AO-Labs-Chile/Audio-Extractor-CD/releases/latest", timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+            latest_tag = data.get("tag_name", "").replace("v", "")
+            
+            # Simple version comparison
+            current_parts = [int(x) for x in APP_VERSION.split(".")]
+            latest_parts = [int(x) for x in latest_tag.split(".")]
+            
+            is_newer = False
+            for c, l in zip(current_parts, latest_parts):
+                if l > c:
+                    is_newer = True
+                    break
+                elif l < c:
+                    break
+            
+            if is_newer:
+                assets = data.get("assets", [])
+                download_url = None
+                for a in assets:
+                    if a.get("name", "").endswith("_Installer.exe"):
+                        download_url = a.get("browser_download_url")
+                        break
+                
+                if download_url:
+                    return jsonify({"update_available": True, "latest_version": latest_tag, "download_url": download_url, "notes": data.get("body", "")})
+        
+        return jsonify({"update_available": False})
+    except Exception as e:
+        print(f"[API] Error checking updates: {e}")
+        return jsonify({"update_available": False})
+
+@app.route("/api/apply_update", methods=["POST"])
+def api_apply_update():
+    data = request.get_json(silent=True) or {}
+    download_url = data.get("url")
+    if not download_url:
+        return jsonify({"success": False, "message": "No URL provided."})
+    
+    def download_and_run():
+        try:
+            exe_path = os.path.join(tempfile.gettempdir(), "AudioExtractorCD_Update.exe")
+            print(f"[Updater] Downloading update from {download_url}...")
+            r = requests.get(download_url, stream=True)
+            with open(exe_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            print(f"[Updater] Running {exe_path} and killing self...")
+            # Run the installer silently and detached
+            subprocess.Popen([exe_path], shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            
+            # Allow subprocess to launch, then kill the app completely
+            time.sleep(1)
+            os._exit(0)
+            
+        except Exception as e:
+            print(f"[Updater] Error applying update: {e}")
+            
+    # Start in background so we can return response immediately
+    threading.Thread(target=download_and_run, daemon=True).start()
+    return jsonify({"success": True})
 
 # ── Cleanup: stop CD audio on shutdown ─────────────────────
 import atexit
