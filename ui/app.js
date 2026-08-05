@@ -369,9 +369,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (ev) => {
-          coverImg.src = ev.target.result;
+        reader.onload = async (ev) => {
+          const dataUrl = ev.target.result;
+          coverImg.src = dataUrl;
           metaSourceTag.textContent = "Portada Local";
+          
+          // Send to backend so it gets embedded in the FLAC/MP3 files
+          await apiPost('/api/set_cover_url', { url: dataUrl });
         };
         reader.readAsDataURL(file);
       }
