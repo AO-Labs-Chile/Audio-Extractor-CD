@@ -542,6 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alb.tracks.forEach((webTr, i) => {
               if (i < currentTracks.length) {
                 currentTracks[i].title = webTr.title;
+                currentTracks[i].artist = webTr.artist || alb.artist || '';
               }
             });
             renderTracksTable();

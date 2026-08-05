@@ -1,6 +1,6 @@
 [Setup]
 AppName=Audio Extractor CD by AO Labs
-AppVersion=1.1.2
+AppVersion=1.1.3
 AppId=AudioExtractorCD_AOLabs
 DefaultDirName={autopf}\Audio Extractor CD
 DefaultGroupName=Audio Extractor CD
@@ -16,6 +16,11 @@ DisableProgramGroupPage=yes
 
 [Tasks]
 Name: "desktopicon"; Description: "Crear un acceso directo en el escritorio"; GroupDescription: "Iconos adicionales:"
+
+[Messages]
+ButtonInstall=&Instalar / Actualizar
+SetupAppTitle=Instalador/Actualizador de Audio Extractor CD
+SetupWindowTitle=Instalador/Actualizador de %1
 
 [Files]
 Source: "dist\Audio_Extractor_CD_AO_Labs\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
